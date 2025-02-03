@@ -14,6 +14,7 @@ function estado_numero(location, states){
   else if (location =="B" && states[1]=="CLEAN" && states[2] == "DIRTY") return "7: [B C D] ->"; 
   else if (location =="B" && states[1]=="CLEAN" && states[2] == "CLEAN") return "8: [B C C] ->"; 
 }
+let visitedStates = new Set();
 
 function test(states){
         //VALIDACION ENSUCIAR
@@ -26,14 +27,23 @@ function test(states){
        var location = states[0];		
        var state = states[0] == "A" ? states[1] : states[2];
        var action_result = reflex_agent(location, state);
-       document.getElementById("log").innerHTML+="<br>"+estado_numero(location, states)+" Location: ".concat(location).concat(" | Action: ").concat(action_result);
+
+       let stateStr = estado_numero(location, states);
+       visitedStates.add(stateStr);
+
+       document.getElementById("log").innerHTML+="<br>"+stateStr+" Location: ".concat(location).concat(" | Action: ").concat(action_result);
 
        if (action_result == "CLEAN"){
          if (location == "A") states[1] = "CLEAN";
           else if (location == "B") states[2] = "CLEAN";
        }
        else if (action_result == "RIGHT") states[0] = "B";
-       else if (action_result == "LEFT") states[0] = "A";		
+       else if (action_result == "LEFT") states[0] = "A";	
+
+       if (visitedStates.size === 8) {
+        document.getElementById("log").innerHTML += "<br><b>Todos los estados han sido visitados.</b>";
+        return;
+    }
  setTimeout(function(){ test(states); }, 2000);
 }
 
